@@ -8,8 +8,10 @@ const AutoWatchPage = () => {
   const [positions, setPositions] = useState<GeolocationPosition[] | undefined>(
     undefined
   );
+  const [isError, setIsError] = useState<boolean>(false);
 
   const startWatch = useCallback(() => {
+    setIsError(false);
     if (geoId === undefined) {
       const id = navigator.geolocation.watchPosition(
         (position) => {
@@ -22,7 +24,7 @@ const AutoWatchPage = () => {
           });
         },
         () => {
-          console.log('error');
+          setIsError(true);
         }
       );
       setGeoId(id);
@@ -44,6 +46,7 @@ const AutoWatchPage = () => {
 
   return (
     <div className="h-full flex flex-col align-center space-y-4">
+      {isError && <div>{'error'}</div>}
       {geoId !== undefined && <div>{'watching...'}</div>}
       <table className="border">
         <thead>

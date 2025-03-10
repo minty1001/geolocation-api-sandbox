@@ -13,10 +13,11 @@ const WatchPage = () => {
   >(undefined);
   const [maximumAge, setMaximumAge] = useState<number | undefined>(undefined);
   const [timeout, setTimeout] = useState<number | undefined>(undefined);
-
   const [options, setOptions] = useState<PositionOptions>({});
+  const [isError, setIsError] = useState<boolean>(false);
 
   const startWatch = useCallback(() => {
+    setIsError(false);
     if (geoId === undefined) {
       const id = navigator.geolocation.watchPosition(
         (position) => {
@@ -28,7 +29,9 @@ const WatchPage = () => {
             return [...prev, position];
           });
         },
-        undefined,
+        () => {
+          setIsError(true);
+        },
         options
       );
       setGeoId(id);
@@ -62,6 +65,7 @@ const WatchPage = () => {
 
   return (
     <div className="h-full flex flex-col align-center space-y-4">
+      {isError && <div>{'error'}</div>}
       <div>
         <div className="flex space-x-1">
           <label htmlFor="enableHighAccuracy">enableHighAccuracy: </label>
